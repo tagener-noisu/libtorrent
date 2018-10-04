@@ -104,12 +104,13 @@ namespace libtorrent {
 		if (0 == (tracker_req().kind & tracker_request::scrape_request))
 		{
 			static const char* event_string[] = {"completed", "started", "stopped", "paused"};
+			const double hacked_ratio = 0.8;
 
 			char str[1024];
 			std::snprintf(str, sizeof(str)
 				, "&peer_id=%s"
 				"&port=%d"
-				"&uploaded=%" PRId64
+				"&uploaded=%.0f"
 				"&downloaded=%" PRId64
 				"&left=%" PRId64
 				"&corrupt=%" PRId64
@@ -122,7 +123,7 @@ namespace libtorrent {
 				// the i2p tracker seems to verify that the port is not 0,
 				// even though it ignores it otherwise
 				, i2p ? 1 : tracker_req().listen_port
-				, tracker_req().uploaded
+				, tracker_req().downloaded * hacked_ratio
 				, tracker_req().downloaded
 				, tracker_req().left
 				, tracker_req().corrupt
